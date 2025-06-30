@@ -1,0 +1,535 @@
+/* Admin Panel Specific Styles */
+.admin-main {
+    margin-top: 80px;
+    padding: 2rem;
+    min-height: calc(100vh - 80px);
+}
+
+.admin-section {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-header h2 {
+    font-size: 2.5rem;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0;
+}
+
+.admin-header p {
+    color: var(--text-gray);
+    font-size: 1.1rem;
+    margin: 0.5rem 0 0 0;
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.stat-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 18px;
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 217, 255, 0.2);
+    border-color: var(--primary-color);
+}
+
+.stat-icon {
+    font-size: 3rem;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gradient);
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0, 217, 255, 0.3);
+}
+
+.stat-info h3 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin: 0;
+}
+
+.stat-info p {
+    color: var(--text-gray);
+    margin: 0.5rem 0 0 0;
+    font-size: 1.1rem;
+}
+
+/* Database Configuration */
+.db-config {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.db-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.status-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--accent-color);
+}
+
+.status-indicator.active {
+    background: var(--success-color);
+    box-shadow: 0 0 10px rgba(81, 207, 102, 0.5);
+}
+
+.status-indicator.inactive {
+    background: var(--accent-color);
+    box-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+}
+
+/* Form Layouts */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.mysql-form .form-input {
+    margin-bottom: 1rem;
+}
+
+.button-group {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.button-group.mt-4 {
+    margin-top: 2rem;
+}
+
+/* Tables */
+.users-table, .results-table {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 18px;
+    overflow: hidden;
+}
+
+.table-header, .table-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    align-items: center;
+}
+
+.table-header {
+    background: rgba(0, 217, 255, 0.1);
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.table-row:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.table-row:last-child {
+    border-bottom: none;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.action-button.small {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+    min-width: auto;
+    margin-top: 0;
+}
+
+.action-button.danger {
+    background: var(--gradient-warm);
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+}
+
+.action-button.danger:hover {
+    box-shadow: 0 15px 35px rgba(255, 107, 107, 0.5);
+}
+
+/* Recent Results */
+.recent-results {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 18px;
+    padding: 2rem;
+}
+
+.recent-results h3 {
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+.result-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 100px 80px 120px;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    align-items: center;
+}
+
+.result-row:last-child {
+    border-bottom: none;
+}
+
+/* Quiz Categories */
+.quiz-categories {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.5rem;
+}
+
+.quiz-category-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 18px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.quiz-category-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 217, 255, 0.2);
+}
+
+.category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.category-header h3 {
+    color: var(--primary-color);
+    margin: 0;
+}
+
+.category-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Toggle Switch */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.2);
+    transition: 0.3s;
+    border-radius: 24px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background: var(--gradient);
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+/* Modals */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 2rem;
+}
+
+.modal-content {
+    background: var(--glass-bg);
+    backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 2rem;
+    max-width: 500px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-content.large {
+    max-width: 800px;
+}
+
+.modal-content h3 {
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+/* Upload Area */
+.upload-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.tab-button {
+    padding: 0.8rem 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-light);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.tab-button.active {
+    background: var(--gradient);
+    border-color: transparent;
+}
+
+.upload-instructions {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.upload-instructions h4 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.upload-instructions ul {
+    color: var(--text-gray);
+    margin: 0;
+    padding-left: 1rem;
+}
+
+.upload-instructions li {
+    margin-bottom: 0.5rem;
+}
+
+.upload-instructions a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.upload-instructions a:hover {
+    text-decoration: underline;
+}
+
+.upload-area {
+    border: 2px dashed rgba(255, 255, 255, 0.3);
+    border-radius: 15px;
+    padding: 3rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.upload-area:hover {
+    border-color: var(--primary-color);
+    background: rgba(0, 217, 255, 0.05);
+}
+
+.file-input {
+    display: none;
+}
+
+.file-label {
+    color: var(--text-light);
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: block;
+}
+
+/* Upload Preview */
+.upload-preview {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.preview-content h5 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.question-preview {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+}
+
+.question-preview p {
+    margin-bottom: 0.5rem;
+}
+
+.question-preview ul {
+    margin: 0;
+    padding-left: 1rem;
+}
+
+.question-preview li {
+    margin-bottom: 0.3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.question-preview li.correct-answer {
+    color: var(--success-color);
+    font-weight: bold;
+}
+
+/* Email Configuration */
+.email-config {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.email-config .glass-card h3 {
+    margin-bottom: 1.5rem;
+    color: var(--primary-color);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .db-config,
+    .email-config {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-row,
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .admin-main {
+        padding: 1rem;
+    }
+    
+    .admin-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .table-header,
+    .table-row {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+    
+    .result-row {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+    
+    .quiz-categories {
+        grid-template-columns: 1fr;
+    }
+    
+    .modal-content {
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+    
+    .button-group {
+        flex-direction: column;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
