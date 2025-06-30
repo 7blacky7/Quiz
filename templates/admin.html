@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Quiz-System</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/admin.css">
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+</head>
+<body x-data="adminApp()" x-cloak>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="logo">Quiz<span>Admin</span></h1>
+            <ul class="nav-menu">
+                <li><a href="/">🏠 Zurück zum Quiz</a></li>
+                <li><a href="#" @click="currentView = 'dashboard'">📊 Dashboard</a></li>
+                <li><a href="#" @click="currentView = 'database'">💾 Datenbank</a></li>
+                <li><a href="#" @click="currentView = 'users'">👥 Benutzer</a></li>
+                <li><a href="#" @click="currentView = 'email'">📧 E-Mail</a></li>
+                <li><a href="#" @click="currentView = 'quiz'">🎯 Quiz-Editor</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="admin-main">
+        <!-- Dashboard View -->
+        <section x-show="currentView === 'dashboard'" class="admin-section">
+            <div class="admin-header">
+                <h2>📊 Dashboard</h2>
+                <p>Übersicht über das Quiz-System</p>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-info">
+                        <h3 x-text="stats.totalUsers || 0"></h3>
+                        <p>Benutzer</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🎯</div>
+                    <div class="stat-info">
+                        <h3 x-text="stats.totalQuizzes || 0"></h3>
+                        <p>Quiz-Kategorien</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-info">
+                        <h3 x-text="stats.totalResults || 0"></h3>
+                        <p>Ergebnisse</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💾</div>
+                    <div class="stat-info">
+                        <h3 x-text="stats.dbStatus || 'SQLite'"></h3>
+                        <p>Datenbank</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="recent-results">
+                <h3>🔥 Neueste Ergebnisse</h3>
+                <div class="results-table">
+                    <template x-for="result in recentResults" :key="result.id">
+                        <div class="result-row">
+                            <span x-text="result.userName"></span>
+                            <span x-text="result.category"></span>
+                            <span x-text="result.score + '/' + result.total"></span>
+                            <span x-text="Math.round(result.percentage) + '%'"></span>
+                            <span x-text="new Date(result.timestamp).toLocaleDateString('de-DE')"></span>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </section>
+
+        <!-- Database View -->
+        <section x-show="currentView === 'database'" class="admin-section">
+            <div class="admin-header">
+                <h2>💾 Datenbankeinstellungen</h2>
+                <p>SQLite und MySQL Konfiguration</p>
+            </div>
+
+            <div class="db-config">
+                <div class="glass-card">
+                    <h3>🗄️ SQLite Datenbank</h3>
+                    <p>Lokale Datenbank für Fallback und primäre Speicherung</p>
+                    <div class="db-status">
+                        <span class="status-indicator active"></span>
+                        <span>Aktiv und funktional</span>
+                    </div>
+                </div>
+
+                <div class="glass-card">
+                    <h3>🌐 MySQL Datenbank</h3>
+                    <div class="mysql-form">
+                        <div class="form-row">
+                            <input type="text" x-model="mysqlConfig.host" placeholder="Host (z.B. localhost)" class="form-input">
+                            <input type="text" x-model="mysqlConfig.port" placeholder="Port (3306)" class="form-input">
+                        </div>
+                        <div class="form-row">
+                            <input type="text" x-model="mysqlConfig.database" placeholder="Datenbankname" class="form-input">
+                            <input type="text" x-model="mysqlConfig.username" placeholder="Benutzername" class="form-input">
+                        </div>
+                        <input type="password" x-model="mysqlConfig.password" placeholder="Passwort" class="form-input">
+                        
+                        <div class="button-group">
+                            <button @click="testMySQLConnection()" class="action-button" :disabled="isLoading">
+                                🧪 Verbindung testen
+                            </button>
+                            <button @click="saveMySQLConfig()" class="action-button success" :disabled="isLoading">
+                                💾 Speichern & Verbinden
+                            </button>
+                        </div>
+                        
+                        <div class="db-status" x-show="mysqlStatus">
+                            <span class="status-indicator" :class="mysqlConnected ? 'active' : 'inactive'"></span>
+                            <span x-text="mysqlStatus"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Users View -->
+        <section x-show="currentView === 'users'" class="admin-section">
+            <div class="admin-header">
+                <h2>👥 Benutzerverwaltung</h2>
+                <p>Alle Benutzer verwalten (Admins und Quiz-Teilnehmer)</p>
+                <button @click="showAddUser = true" class="action-button success">+ Admin hinzufügen</button>
+            </div>
+
+            <div class="users-table">
+                <div class="table-header">
+                    <span>Benutzername</span>
+                    <span>Typ</span>
+                    <span>E-Mail</span>
+                    <span>Passwort</span>
+                    <span>Erstellt</span>
+                    <span>Aktionen</span>
+                </div>
+                <template x-for="user in users" :key="user.id">
+                    <div class="table-row">
+                        <span x-text="user.username"></span>
+                        <span class="user-type" :class="user.isAdmin ? 'admin-type' : 'user-type'">
+                            <span x-text="user.isAdmin ? '👑 Admin' : '👤 Teilnehmer'"></span>
+                        </span>
+                        <span x-text="user.email || 'Keine E-Mail'"></span>
+                        <span x-text="user.hasPassword ? '🔒 Ja' : '⚡ Nein'"></span>
+                        <span x-text="new Date(user.created).toLocaleDateString('de-DE')"></span>
+                        <div class="action-buttons">
+                            <button @click="changePassword(user.username)" class="action-button warning small" 
+                                    x-show="user.isAdmin">🔑 Passwort</button>
+                            <button @click="deleteUser(user.username)" class="action-button danger small" 
+                                    x-show="user.username !== currentUser && (!user.isAdmin || (user.isAdmin && adminCount > 1))">🗑️ Löschen</button>
+                        </div>
+                    </div>
+                </template>
+            </div>
+
+            <!-- Add User Modal -->
+            <div x-show="showAddUser" class="modal-overlay" @click.self="showAddUser = false">
+                <div class="modal-content">
+                    <h3>👤 Neuen Benutzer hinzufügen</h3>
+                    <input type="text" x-model="newUser.username" placeholder="Benutzername" class="form-input">
+                    <input type="email" x-model="newUser.email" placeholder="E-Mail (optional)" class="form-input">
+                    <input type="password" x-model="newUser.password" placeholder="Passwort" class="form-input">
+                    <div class="button-group">
+                        <button @click="createUser()" class="action-button success">✅ Erstellen</button>
+                        <button @click="showAddUser = false" class="action-button warning">❌ Abbrechen</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Email View -->
+        <section x-show="currentView === 'email'" class="admin-section">
+            <div class="admin-header">
+                <h2>📧 E-Mail Konfiguration</h2>
+                <p>Microsoft Graph und SMTP Einstellungen</p>
+            </div>
+
+            <div class="email-config">
+                <div class="glass-card">
+                    <h3>🔗 Microsoft Graph API</h3>
+                    <div class="form-grid">
+                        <input type="text" x-model="emailSettings.graphClientId" placeholder="Client ID" class="form-input">
+                        <input type="password" x-model="emailSettings.graphClientSecret" placeholder="Client Secret" class="form-input">
+                        <input type="text" x-model="emailSettings.graphTenantId" placeholder="Tenant ID" class="form-input">
+                        <input type="email" x-model="emailSettings.emailRecipient" placeholder="Empfänger E-Mail" class="form-input">
+                    </div>
+                    <button @click="testEmailConnection('graph')" class="action-button">🧪 Microsoft Graph testen</button>
+                </div>
+
+                <div class="glass-card">
+                    <h3>📮 SMTP Fallback</h3>
+                    <div class="form-grid">
+                        <input type="text" x-model="emailSettings.smtpServer" placeholder="SMTP Server" class="form-input">
+                        <input type="text" x-model="emailSettings.smtpPort" placeholder="Port" class="form-input">
+                        <input type="text" x-model="emailSettings.smtpUsername" placeholder="Benutzername" class="form-input">
+                        <input type="password" x-model="emailSettings.smtpPassword" placeholder="Passwort" class="form-input">
+                    </div>
+                    <button @click="testEmailConnection('smtp')" class="action-button warning">🧪 SMTP testen</button>
+                </div>
+
+                <div class="button-group mt-4">
+                    <button @click="saveEmailSettings()" class="action-button success">💾 E-Mail Einstellungen speichern</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quiz Editor View -->
+        <section x-show="currentView === 'quiz'" class="admin-section">
+            <div class="admin-header">
+                <h2>🎯 Quiz-Konfiguration</h2>
+                <p>Quiz-Kategorien und Fragen verwalten</p>
+                <button @click="showUploadModal = true" class="action-button success">📤 Quiz hochladen</button>
+            </div>
+
+            <div class="quiz-categories">
+                <template x-for="(quiz, key) in quizCategories" :key="key">
+                    <div class="quiz-category-card">
+                        <div class="category-header">
+                            <h3 x-text="quiz.title"></h3>
+                            <div class="category-actions">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" :checked="quiz.active" @change="toggleCategory(key)">
+                                    <span class="slider"></span>
+                                </label>
+                                <button @click="editCategory(key)" class="action-button small">✏️ Bearbeiten</button>
+                                <button @click="deleteCategory(key)" class="action-button danger small">🗑️ Löschen</button>
+                            </div>
+                        </div>
+                        <p x-text="quiz.questions?.length + ' Fragen'"></p>
+                    </div>
+                </template>
+            </div>
+
+            <!-- Upload Modal -->
+            <div x-show="showUploadModal" class="modal-overlay" @click.self="showUploadModal = false">
+                <div class="modal-content large">
+                    <h3>📤 Quiz hochladen</h3>
+                    
+                    <div class="upload-tabs">
+                        <button @click="uploadType = 'csv'" :class="uploadType === 'csv' ? 'active' : ''" class="tab-button">📄 CSV</button>
+                        <button @click="uploadType = 'excel'" :class="uploadType === 'excel' ? 'active' : ''" class="tab-button">📊 Excel</button>
+                    </div>
+
+                    <div x-show="uploadType === 'csv'" class="upload-instructions">
+                        <h4>📋 CSV Format-Regeln:</h4>
+                        <ul>
+                            <li>• Dateiname wird als Kategorie-Name verwendet</li>
+                            <li>• Erste Zeile: Header (Frage,Antwort A,Antwort B,Antwort C,Antwort D,Richtige Antwort)</li>
+                            <li>• Richtige Antwort: A, B, C oder D</li>
+                            <li>• UTF-8 Encoding verwenden</li>
+                            <li>• Beispiel: <a href="/example-quiz.csv" download>example-quiz.csv herunterladen</a></li>
+                        </ul>
+                    </div>
+
+                    <div x-show="uploadType === 'excel'" class="upload-instructions">
+                        <h4>📋 Excel Format-Regeln:</h4>
+                        <ul>
+                            <li>• Erste Spalte (A): Frage</li>
+                            <li>• Spalten B-E: Antwortoptionen</li>
+                            <li>• Spalte F: Richtige Antwort (A, B, C oder D)</li>
+                            <li>• Zeile 1: Header</li>
+                            <li>• Arbeitsblatt-Name wird als Kategorie verwendet</li>
+                        </ul>
+                    </div>
+
+                    <div class="upload-area">
+                        <input type="file" @change="handleFileUpload($event)" 
+                               :accept="uploadType === 'csv' ? '.csv' : '.xlsx,.xls'"
+                               class="file-input" id="fileInput">
+                        <label for="fileInput" class="file-label">
+                            📁 Datei auswählen oder hierher ziehen
+                        </label>
+                    </div>
+
+                    <div x-show="uploadPreview" class="upload-preview">
+                        <h4>👀 Vorschau:</h4>
+                        <div class="preview-content">
+                            <h5 x-text="'Kategorie: ' + previewData.category"></h5>
+                            <div class="questions-preview">
+                                <template x-for="(question, index) in previewData.questions" :key="index">
+                                    <div class="question-preview">
+                                        <p><strong x-text="'Frage ' + (index + 1) + ':'"></strong> <span x-text="question.question"></span></p>
+                                        <ul>
+                                            <template x-for="(option, optIndex) in question.options" :key="optIndex">
+                                                <li :class="optIndex === question.correct ? 'correct-answer' : ''">
+                                                    <span x-text="String.fromCharCode(65 + optIndex) + ': ' + option"></span>
+                                                    <span x-show="optIndex === question.correct"> ✅</span>
+                                                </li>
+                                            </template>
+                                        </ul>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <button @click="saveUploadedQuiz()" x-show="uploadPreview" class="action-button success">💾 Quiz speichern</button>
+                        <button @click="cancelUpload()" class="action-button warning">❌ Schließen</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Notification Toast -->
+    <div x-show="notification.show" 
+         x-transition:enter="transition ease-out duration-300 transform"
+         x-transition:enter-start="translate-x-full"
+         x-transition:enter-end="translate-x-0"
+         x-transition:leave="transition ease-in duration-200 transform"
+         x-transition:leave-start="translate-x-0"
+         x-transition:leave-end="translate-x-full"
+         class="fixed top-4 right-4 z-50 glass-card max-w-sm">
+        <div class="flex items-center">
+            <div class="flex-1">
+                <h4 class="font-bold text-lg" x-text="notification.title"></h4>
+                <p class="text-sm opacity-90" x-text="notification.message"></p>
+            </div>
+            <button @click="notification.show = false" class="ml-4 text-white hover:text-gray-300 text-2xl">×</button>
+        </div>
+    </div>
+
+    <script src="/static/js/admin/admin.js"></script>
+</body>
+</html>
