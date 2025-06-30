@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Quiz-System</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/admin-panel.css">
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+</head>
+<body x-data="adminPanelApp()" x-cloak>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="logo">Quiz<span>Admin</span></h1>
+            <ul class="nav-menu">
+                <li><a href="/">🏠 Zurück zum Quiz</a></li>
+                <li><a href="#" @click="logout()">🚪 Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="admin-container">
+        <!-- Sidebar Navigation -->
+        <aside class="admin-sidebar">
+            <div class="sidebar-header">
+                <h2>🎛️ Admin-Panel</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" @click="currentView = 'dashboard'" :class="currentView === 'dashboard' ? 'active' : ''">
+                    📊 Dashboard
+                </a>
+                <a href="#" @click="currentView = 'database'" :class="currentView === 'database' ? 'active' : ''">
+                    💾 Datenbank
+                </a>
+                <a href="#" @click="currentView = 'users'" :class="currentView === 'users' ? 'active' : ''">
+                    👥 Benutzer
+                </a>
+                <a href="#" @click="currentView = 'email'" :class="currentView === 'email' ? 'active' : ''">
+                    📧 E-Mail
+                </a>
+                <a href="#" @click="currentView = 'quiz'" :class="currentView === 'quiz' ? 'active' : ''">
+                    🎯 Quiz-Konfigurator
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="admin-main-content">
+            <!-- Dashboard View -->
+            <div x-show="currentView === 'dashboard'" class="admin-view">
+                <div class="view-header">
+                    <h1>📊 Dashboard</h1>
+                    <p>Übersicht über das Quiz-System</p>
+                </div>
+                <div id="dashboard-content"></div>
+            </div>
+
+            <!-- Database View -->
+            <div x-show="currentView === 'database'" class="admin-view">
+                <div class="view-header">
+                    <h1>💾 Datenbank</h1>
+                    <p>SQLite und MySQL Konfiguration</p>
+                </div>
+                <div id="database-content"></div>
+            </div>
+
+            <!-- Users View -->
+            <div x-show="currentView === 'users'" class="admin-view">
+                <div class="view-header">
+                    <h1>👥 Benutzer</h1>
+                    <p>Admin-Benutzer verwalten</p>
+                </div>
+                <div id="users-content"></div>
+            </div>
+
+            <!-- Email View -->
+            <div x-show="currentView === 'email'" class="admin-view">
+                <div class="view-header">
+                    <h1>📧 E-Mail</h1>
+                    <p>Microsoft Graph und SMTP Einstellungen</p>
+                </div>
+                <div id="email-content"></div>
+            </div>
+
+            <!-- Quiz Configurator View -->
+            <div x-show="currentView === 'quiz'" class="admin-view">
+                <div class="view-header">
+                    <h1>🎯 Quiz-Konfigurator</h1>
+                    <p>Quiz-Kategorien und Fragen verwalten</p>
+                </div>
+                <div id="quiz-content"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Notification Toast -->
+    <div x-show="notification.show" 
+         x-transition:enter="transition ease-out duration-300 transform"
+         x-transition:enter-start="translate-x-full"
+         x-transition:enter-end="translate-x-0"
+         x-transition:leave="transition ease-in duration-200 transform"
+         x-transition:leave-start="translate-x-0"
+         x-transition:leave-end="translate-x-full"
+         class="notification-toast">
+        <div class="flex items-center">
+            <div class="flex-1">
+                <h4 class="font-bold text-lg" x-text="notification.title"></h4>
+                <p class="text-sm opacity-90" x-text="notification.message"></p>
+            </div>
+            <button @click="notification.show = false" class="ml-4 text-white hover:text-gray-300 text-2xl">×</button>
+        </div>
+    </div>
+
+    <script src="/static/js/admin-panel.js"></script>
+    <script src="/static/js/admin-dashboard.js"></script>
+    <script src="/static/js/admin-database.js"></script>
+    <script src="/static/js/admin-users.js"></script>
+    <script src="/static/js/admin-email.js"></script>
+    <script src="/static/js/admin-quiz.js"></script>
+</body>
+</html>
